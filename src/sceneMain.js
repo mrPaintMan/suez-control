@@ -5,12 +5,14 @@ class SceneMain extends Phaser.Scene {
     }
     
     preload() {
-        
+        this.load.image("sprBoat", "content/bat.png");
+        this.load.image("sprBigBoat", "content/bigboat.png");
+        this.load.image("sprMediumBoat", "content/mediumboat.png");
+        this.load.image("sprTraktor", "content/traktor.png");
     }
     
     create() {
-        
-        
+        this.add.sprite(Math.floor(Math.random()*100), Math.floor(Math.random()*100), "sprBoat");
     }
 
     
