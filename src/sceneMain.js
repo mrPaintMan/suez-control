@@ -27,27 +27,6 @@ class SceneMain extends Phaser.Scene {
         
         this.graphics.fillRectShape(ocean);
 
-        this.westCoast = this.physics.add.staticGroup();
-        this.eastCoast = this.physics.add.staticGroup();
-        console.log(this.eastCoast, this.westCoast);
-
-        for(var y = 0; y < 3; y++) { 
-            for (var x = 0; x <= 30; x++) {
-                if (y == 3) {
-                    this.westCoast.add(new Coast(this, x * 15, (705-(y * 15)), "sprTopSand"));
-                    this.eastCoast.add(new Coast(this, 1040 - (x * 15), (705-(y * 15)), "sprTopSand"));
-                }
-                else if (x == 0){
-                    this.westCoast.add(new Coast(this, x * 15, (705-(y * 15)), "sprLeftSand"));
-                    this.eastCoast.add(new Coast(this, 1040 - (x * 15), (705-(y * 15)), "sprLeftSand"));
-                }
-                else{
-                    this.westCoast.add(new Coast(this, x * 15, (705-(y * 15)), "sprTopSand"));
-                    this.eastCoast.add(new Coast(this, 1040 - (x * 15), (705-(y * 15)), "sprTopSand"));
-                }
-            }
-        }
-
         // Boats
         this.boats = this.physics.add.group({
             velocityX: 0,
@@ -61,12 +40,6 @@ class SceneMain extends Phaser.Scene {
         });
 
 
-
-        this.physics.add.collider(this.westCoast, this.scene.boats)
-        this.physics.add.collider(this.eastCoast, this.scene.boats)
-
-        
-    
     }
 
     createCoast() {
@@ -110,8 +83,16 @@ class SceneMain extends Phaser.Scene {
     
 
     update() {
+
+        if (!this.westCoast || !this.eastCoast) {
+            this.createCoast();
+
+
+            this.physics.add.collider(this.westCoast, this.scene.boats)
+            this.physics.add.collider(this.eastCoast, this.scene.boats)
+        }
        
-       if (game.input.mousePointer.isDown) {
+        if (game.input.mousePointer.isDown) {
            this.boats.add(new Boat(this, Phaser.Math.Between(100,900), -200));
            this.tractors.add(new Tractor(this, 0,Phaser.Math.Between(100,600)) );
         }
