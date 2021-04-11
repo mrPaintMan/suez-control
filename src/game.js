@@ -10,6 +10,7 @@ var config = {
         }
     },
     scene: [
+        SceneStart,
         SceneMain
     ],
     pixelArt: true,
