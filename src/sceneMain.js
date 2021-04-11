@@ -16,6 +16,7 @@ class SceneMain extends Phaser.Scene {
         this.load.image("sprRightTopSand", "content/rightTopSand.png");
         this.load.image("sprRightSand", "content/rightSand.png");
         this.load.image("sprMiddleSand", "content/middleSand.png");
+        this.load.image("sprPirateShip","content/piratskepp.png");
     }
     
     create() {
