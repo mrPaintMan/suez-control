@@ -10,8 +10,8 @@ var config = {
         }
     },
     scene: [
-        SceneStart,
-        SceneMain
+        SceneStart, SceneMain
+       
     ],
     pixelArt: true,
     roundPixels: true

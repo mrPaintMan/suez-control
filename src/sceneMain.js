@@ -1,10 +1,12 @@
 class SceneMain extends Phaser.Scene {
     constructor() {
         super({ key: "SceneMain" });
-
+        let score = 0; 
+        let scoreText; 
     }
     
     preload() {
+        
         this.load.image("sprBoat", "content/Lyxbat.png");
         this.load.image("sprBigBoat", "content/bigboat.png");
         this.load.image("sprMediumBoat", "content/mediumboat.png");
@@ -19,11 +21,15 @@ class SceneMain extends Phaser.Scene {
     }
     
     create() {
+        
+      
+
         this.tick = 0;
         this.pirateShipTick = 0;
         this.spawnSpeed = 0.2;
         this.piratespawnSpeed = 0.2; 
         this.boats = [];
+
         this.selectedBoat = null;
         this.wasDown = false;
 
@@ -43,6 +49,8 @@ class SceneMain extends Phaser.Scene {
 
         this.physics.add.collider(this.tractors, this.boats, this.scareBoat,null,this);
       //  this.tractors.body.setImmovable(true);
+        this.scoreText = this.add.text(16, 16, "Score 0", { fontSize: "32px", fill: "#000" });
+
     }
  
     
@@ -51,7 +59,7 @@ class SceneMain extends Phaser.Scene {
         let ocean = new Phaser.Geom.Rectangle();
         ocean.width = config.width;
         ocean.height = config.height;
-        
+
         this.graphics.fillRectShape(ocean);
         this.graphics.lineStyle(10, 0xFFFFFF, 0.3);
     }
@@ -97,16 +105,19 @@ class SceneMain extends Phaser.Scene {
     scareBoat(){
         //this.boats.disableBody(true,true);
         //Ge båten en random velocity åt något håll när den dunkar in i traktorn.
+        this.score+=10;
+        console.log(this.score);
     }
     
-    sleep(miliseconds) {
-        var currentTime = new Date().getTime();
+    // sleep(miliseconds) {
+    //     var currentTime = new Date().getTime();
      
-        while (currentTime + miliseconds >= new Date().getTime()) {
-        }
-     }
+    //     while (currentTime + miliseconds >= new Date().getTime()) {
+    //     }
+    //  }
     
     update() {
+        
         let mouse = game.input.mousePointer;
         let boatPath = []; 
 
@@ -131,7 +142,7 @@ class SceneMain extends Phaser.Scene {
         //Spawn tractors 
         if(this.pirateShipTick >=60/this.piratespawnSpeed){
             this.pirateShipTick = 0; 
-            this.spawnSpeed +=0.01;
+            this.spawnSpeed += 0.01;
             this.tractors.add(new Tractor(this, 10,Phaser.Math.Between(100,config.height-500))); 
         }
 
@@ -154,6 +165,12 @@ class SceneMain extends Phaser.Scene {
               this.wasDown = true;
               this.selectedBoat.line = this.graphics.beginPath();
             }
+            if(this.selectedBoat.y>100){
+
+             this.score += 10;
+            // this.scoreText = this.scoreText.setText('Score: ' + score);
+
+            }
             
             
             if (this.pathIndex == 0 || (this.selectedBoat.path[this.pathIndex - 1].x != mouse.x || this.selectedBoat.path[this.pathIndex - 1].y != mouse.y)) {
@@ -172,6 +189,8 @@ class SceneMain extends Phaser.Scene {
 
 
         }
+        //console.log(this.boats.y);
+        
         this.boats.forEach(boat => {
             boat.followLine();
 
