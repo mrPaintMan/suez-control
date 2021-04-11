@@ -22,9 +22,8 @@ class Boat extends Phaser.Physics.Arcade.Sprite {
         this.scene.physics.add.collider(this, this.scene.westCoast, () => { this.scene.lose(this.scene) })
         this.scene.physics.add.collider(this, this.scene.eastCoast, () => { this.scene.lose(this.scene) })
 
-        this.scene.boats.forEach(boat => {
-            this.scene.physics.add.collider(this, boat, () => { this.scene.lose(this.scene) })
-        });
+        this.scene.physics.add.collider(this, this.scene.boats, () => { this.scene.lose(this.scene) })
+        this.scene.physics.add.collider(this, this.scene.tractors, () => { this.boatBounce(this) })
 
         this.setInteractive();
         this.on("pointerdown", () => {this.scene.selectedBoat = this})
@@ -60,9 +59,14 @@ class Boat extends Phaser.Physics.Arcade.Sprite {
             this.line = null;
         }
     }
-    boatBounce(){
-        console.log("boatbounce")
+    boatBounce(boat) {
+        boat.path = [];
+        if (boat.line != null) {
+            boat.line.clear();
+        }
+
         this.speed = Phaser.Math.Between(50, 75);
+        this.refAngle = Phaser.Math.Between(-180, 180);
         this.angle = this.refAngle > 90 ? this.refAngle - 270: this.refAngle + 90;
     }
 }

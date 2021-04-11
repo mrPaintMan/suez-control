@@ -32,10 +32,6 @@ class SceneMain extends Phaser.Scene {
 
         this.selectedBoat = null;
         this.wasDown = false;
-
-        this.path = null;
-        this.pathIndex = -1;
-        this.pathSpriteIndex = -1;
         
         // Background
         this.graphics = this.add.graphics({ fillStyle: { color: 0x06a4d6 }, strokeStyle: { color: 0xffffff} });
@@ -47,7 +43,6 @@ class SceneMain extends Phaser.Scene {
             velocityY: 0 
         });
 
-        this.physics.add.collider(this.tractors, this.boats, this.scareBoat,null,this);
         this.scoreText =  this.add.text(16, 16, "Score 0", { fontSize: "32px", fill: "#000" });
 
         this.createCoast();
@@ -177,14 +172,6 @@ class SceneMain extends Phaser.Scene {
             };
             boat.followLine();
         });
-        
-
-        this.physics.collide(
-            this.tractors,
-            this.boats,
-            this.scareBoat,
-            null,
-        )
 
         if (this.lost && this.tick > 300) {
             this.scene.start("SceneStart");
