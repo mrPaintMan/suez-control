@@ -49,6 +49,9 @@ class SceneMain extends Phaser.Scene {
         this.physics.add.collider(this.tractors, this.boats, this.scareBoat,null,this);
         this.scoreText =  this.add.text(16, 16, "Score 0", { fontSize: "32px", fill: "#000" });
 
+        this.createCoast();
+        this.boats.push(new Boat(this, Phaser.Math.Between(0, config.width), -50));
+
     }
  
     
@@ -87,12 +90,12 @@ class SceneMain extends Phaser.Scene {
     }
 
     lose(scene) {
-       console.log(scene);
-       scene.physics.pause();
+        scene.physics.pause();
 
         let gameOverText = scene.add.text(config.width / 2, config.height / 2, 'Game Over', { fontSize: '48px', fill: '#000' });
-            gameOverText.setOrigin(0.5)
+        gameOverText.setOrigin(0.5)
         scene.lost = true;
+        this.scene.tick = 0;
     }
     
 
@@ -111,19 +114,13 @@ class SceneMain extends Phaser.Scene {
         this.score+=10;
         console.log(this.score);
         this.scoreText.setText('Points: ' + this.score);
+        
     }
 
 
     
     update() {
         let mouse = game.input.mousePointer;
-
-        // Create Coast
-        if (!this.westCoast || !this.eastCoast) {
-            this.createCoast();
-            this.boats.push(new Boat(this, Phaser.Math.Between(0, config.width), -50));
-
-        }
 
         // Spawn boats
         if (this.tick >= 60 / this.spawnSpeed && !this.lost) {
@@ -188,7 +185,7 @@ class SceneMain extends Phaser.Scene {
             null,
         )
 
-        if (this.lost && this.tick > 500) {
+        if (this.lost && this.tick > 300) {
             this.scene.start("SceneStart");
         }
     }
