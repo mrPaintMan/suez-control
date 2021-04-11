@@ -33,7 +33,7 @@ class SceneMain extends Phaser.Scene {
         
         // Background
         this.graphics = this.add.graphics({ fillStyle: { color: 0x06a4d6 }, strokeStyle: { color: 0xffffff} });
-        this.blackoutGraphic();
+        this.whiteLine();
 
         //tractors
         this.tractors = this.physics.add.group({
@@ -47,13 +47,21 @@ class SceneMain extends Phaser.Scene {
  
     
     
-    blackoutGraphic() {
+    whiteLine() {
         let ocean = new Phaser.Geom.Rectangle();
         ocean.width = config.width;
         ocean.height = config.height;
         
         this.graphics.fillRectShape(ocean);
-        this.graphics.lineStyle(1, 0xFFFFFF, 0.3);
+        this.graphics.lineStyle(10, 0xFFFFFF, 0.3);
+    }
+    fillBackIn(){
+        let ocean = new Phaser.Geom.Rectangle();
+        ocean.width = config.width;
+        ocean.height = config.height;
+        
+        this.graphics.fillRectShape(ocean);
+        this.graphics.lineStyle(1, 0x06a4d6, 0.3);
     }
 
     createCoast() {
@@ -100,6 +108,7 @@ class SceneMain extends Phaser.Scene {
     
     update() {
         let mouse = game.input.mousePointer;
+        let boatPath = []; 
 
         // Create Coast
         if (!this.westCoast || !this.eastCoast) {
@@ -118,6 +127,7 @@ class SceneMain extends Phaser.Scene {
         else {
             this.tick++;
         }
+
         //Spawn tractors 
         if(this.pirateShipTick >=60/this.piratespawnSpeed){
             this.pirateShipTick = 0; 
@@ -129,37 +139,42 @@ class SceneMain extends Phaser.Scene {
             this.pirateShipTick++;
         }
 
-    
+
 
         // Move Boat
         if (this.selectedBoat != null && mouse.isDown) {
-
+            //console.log(mouse.x);
             if (!this.wasDown) {
-                console.log(this.graphics.x, this.graphics.y);
+              //console.log(this.graphics.x, this.graphics.y);
               this.graphics.moveTo(mouse.x, mouse.y);
-              this.blackoutGraphic();
+              this.whiteLine();
               this.pathIndex = 0;
               this.pathSpriteIndex = 0;
               this.path = [];
               this.wasDown = true;
               this.selectedBoat.line = this.graphics.beginPath();
             }
-      
+            
+            
             if (this.pathIndex == 0 || (this.selectedBoat.path[this.pathIndex - 1].x != mouse.x || this.selectedBoat.path[this.pathIndex - 1].y != mouse.y)) {
                 this.graphics.lineTo(mouse.x, mouse.y);
+                console.log(this.pathIndex);
                 this.graphics.strokePath();
-
                 this.selectedBoat.path[this.pathIndex] = new Phaser.Geom.Point(mouse.x, mouse.y);
                 this.pathIndex++;
             }
 
+
         } else {
+            this.fillBackIn()
             this.wasDown = false;
             this.selectedBoat = null;
-        }
 
+
+        }
         this.boats.forEach(boat => {
             boat.followLine();
+
         });
         
 
