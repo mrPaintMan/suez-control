@@ -64,7 +64,7 @@ class SceneStart extends Phaser.Scene {
         if (this.tick >= 30) {
             this.tick = 0;
 
-            let key = Math.random() > 0.7 ? "sprBoat" : "sprBigBoat";
+            let key = Math.random() < 0.7 ? "sprBoat" : "sprBigBoat";
             let boat = this.add.sprite(Phaser.Math.Between(0, 1040), -20, key);
             boat.angle = 180;
             boat.setDepth(0)
