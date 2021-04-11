@@ -98,7 +98,6 @@ class SceneMain extends Phaser.Scene {
 
     lose() {
         //this.physics.pause();
-        console.log("game over!")
     }
     
 
@@ -109,17 +108,9 @@ class SceneMain extends Phaser.Scene {
         console.log(this.score);
     }
     
-    // sleep(miliseconds) {
-    //     var currentTime = new Date().getTime();
-     
-    //     while (currentTime + miliseconds >= new Date().getTime()) {
-    //     }
-    //  }
-    
     update() {
         
         let mouse = game.input.mousePointer;
-        let boatPath = []; 
 
         // Create Coast
         if (!this.westCoast || !this.eastCoast) {
@@ -131,7 +122,7 @@ class SceneMain extends Phaser.Scene {
         // Spawn boats
         if (this.tick >= 60/this.spawnSpeed) {
             this.tick = 0;
-            this.spawnSpeed += 0.01;
+            this.spawnSpeed += 0.001;
             this.boats.push(new Boat(this, Phaser.Math.Between(0, config.width), -50));
         }
      
@@ -140,9 +131,9 @@ class SceneMain extends Phaser.Scene {
         }
 
         //Spawn tractors 
-        if(this.pirateShipTick >=60/this.piratespawnSpeed){
+        if(this.pirateShipTick >=120/this.piratespawnSpeed){
             this.pirateShipTick = 0; 
-            this.spawnSpeed += 0.01;
+            this.spawnSpeed += 0.001;
             this.tractors.add(new Tractor(this, 10,Phaser.Math.Between(100,config.height-500))); 
         }
 
@@ -150,13 +141,9 @@ class SceneMain extends Phaser.Scene {
             this.pirateShipTick++;
         }
 
-
-
         // Move Boat
         if (this.selectedBoat != null && mouse.isDown) {
-            //console.log(mouse.x);
             if (!this.wasDown) {
-              //console.log(this.graphics.x, this.graphics.y);
               this.graphics.moveTo(mouse.x, mouse.y);
               this.whiteLine();
               this.pathIndex = 0;
@@ -164,6 +151,7 @@ class SceneMain extends Phaser.Scene {
               this.path = [];
               this.wasDown = true;
               this.selectedBoat.line = this.graphics.beginPath();
+              this.selectedBoat.path = [];
             }
             if(this.selectedBoat.y>100){
 
@@ -175,7 +163,6 @@ class SceneMain extends Phaser.Scene {
             
             if (this.pathIndex == 0 || (this.selectedBoat.path[this.pathIndex - 1].x != mouse.x || this.selectedBoat.path[this.pathIndex - 1].y != mouse.y)) {
                 this.graphics.lineTo(mouse.x, mouse.y);
-                console.log(this.pathIndex);
                 this.graphics.strokePath();
                 this.selectedBoat.path[this.pathIndex] = new Phaser.Geom.Point(mouse.x, mouse.y);
                 this.pathIndex++;
@@ -183,17 +170,15 @@ class SceneMain extends Phaser.Scene {
 
 
         } else {
-            this.fillBackIn()
+            //this.fillBackIn()
             this.wasDown = false;
             this.selectedBoat = null;
 
 
         }
-        //console.log(this.boats.y);
         
         this.boats.forEach(boat => {
             boat.followLine();
-
         });
         
 
@@ -204,18 +189,4 @@ class SceneMain extends Phaser.Scene {
             null,
         )
     }
-
-    pointerMove (pointer) {
-        // if (!pointer.manager.isOver) return;
-        
-    //     var angleToPointer = Phaser.Math.Angle.Between(this.testBoat.x, this.testBoat.y, pointer.worldX, pointer.worldY);
-    //     var angleDelta = Phaser.Math.Angle.Wrap(30-angleToPointer - this.testBoat.rotation);
-    //     //console.log(this.testBoat.y);
-    //     if (Phaser.Math.Within(angleDelta, 0, 10)) {
-    //         this.testBoat.rotation = angleToPointer-130;
-    //         this.testBoat.setAngularVelocity(0);
-    //     } else {
-    //         this.testBoat.setAngularVelocity(Math.sign(angleDelta) * 100);
-    //     }
-       } 
 }
