@@ -1,8 +1,6 @@
 class SceneMain extends Phaser.Scene {
     constructor() {
         super({ key: "SceneMain" });
-        let score = 0; 
-        let scoreText; 
     }
     
     preload() {
@@ -22,12 +20,9 @@ class SceneMain extends Phaser.Scene {
     
     create() {
         this.score = 0;
-               this.scoreText;
+        this.scoreText;
+        this.lost = false;
        
-       
-       
-       
-
         this.tick = 0;
         this.pirateShipTick = 0;
         this.spawnSpeed = 0.2;
@@ -52,7 +47,6 @@ class SceneMain extends Phaser.Scene {
         });
 
         this.physics.add.collider(this.tractors, this.boats, this.scareBoat,null,this);
-      //  this.tractors.body.setImmovable(true);
         this.scoreText =  this.add.text(16, 16, "Score 0", { fontSize: "32px", fill: "#000" });
 
     }
@@ -92,8 +86,13 @@ class SceneMain extends Phaser.Scene {
         }
     }
 
-    lose() {
-        //this.physics.pause();
+    lose(scene) {
+       console.log(scene);
+       scene.physics.pause();
+
+        let gameOverText = scene.add.text(config.width / 2, config.height / 2, 'Game Over', { fontSize: '48px', fill: '#000' });
+            gameOverText.setOrigin(0.5)
+        scene.lost = true;
     }
     
 
@@ -117,7 +116,6 @@ class SceneMain extends Phaser.Scene {
 
     
     update() {
-        
         let mouse = game.input.mousePointer;
 
         // Create Coast
@@ -128,7 +126,7 @@ class SceneMain extends Phaser.Scene {
         }
 
         // Spawn boats
-        if (this.tick >= 60/this.spawnSpeed) {
+        if (this.tick >= 60 / this.spawnSpeed && !this.lost) {
             this.tick = 0;
             this.spawnSpeed += 0.001;
             this.boats.push(new Boat(this, Phaser.Math.Between(0, config.width), -50));
@@ -139,7 +137,7 @@ class SceneMain extends Phaser.Scene {
         }
 
         //Spawn tractors 
-        if(this.pirateShipTick >=120/this.piratespawnSpeed){
+        if(this.pirateShipTick >= 120 / this.piratespawnSpeed  && !this.lost){
             this.pirateShipTick = 0; 
             this.spawnSpeed += 0.001;
             this.tractors.add(new Tractor(this, 10,Phaser.Math.Between(100,config.height-500))); 
@@ -189,5 +187,9 @@ class SceneMain extends Phaser.Scene {
             this.scareBoat,
             null,
         )
+
+        if (this.lost && this.tick > 500) {
+            this.scene.start("SceneStart");
+        }
     }
 }

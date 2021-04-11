@@ -19,8 +19,12 @@ class Boat extends Phaser.Physics.Arcade.Sprite {
         this.setVelocityY(this.speed * Math.abs(Math.sin(this.refAngle*Math.PI/180)));
         this.setVelocityX(this.speed * (Math.cos(this.refAngle*Math.PI/180)));
 
-        this.scene.physics.add.collider(this, this.scene.westCoast, this.scene.lose)
-        this.scene.physics.add.collider(this, this.scene.eastCoast, this.scene.lose)
+        this.scene.physics.add.collider(this, this.scene.westCoast, () => { this.scene.lose(this.scene) })
+        this.scene.physics.add.collider(this, this.scene.eastCoast, () => { this.scene.lose(this.scene) })
+
+        this.scene.boats.forEach(boat => {
+            this.scene.physics.add.collider(this, boat, () => { this.scene.lose(this.scene) })
+        });
 
         this.setInteractive();
         this.on("pointerdown", () => {this.scene.selectedBoat = this})
@@ -29,7 +33,6 @@ class Boat extends Phaser.Physics.Arcade.Sprite {
         this.line = null;
 
         this.graphics = this.scene.add.graphics();
-        this.graphics.lineStyle(5, 0xFFFFFF, 0.3);
     }
 
     followLine() {
@@ -96,8 +99,7 @@ class Coast extends Phaser.Physics.Arcade.Sprite {
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.setImmovable(true)
-        
 
-        this.scene.physics.add.collider(this, this.scene.boats, this.scene.lose)
+        this.scene.physics.add.collider(this, this.scene.boats, () => { this.scene.lose(this.scene) })
     }
 }
