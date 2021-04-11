@@ -70,10 +70,11 @@ class Boat extends Phaser.Physics.Arcade.Sprite {
 class Tractor extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y) {
         super(scene, x, y, "sprPirateShip");
-        
+        this.setScale(0.08);
         //this.refAngle = Phaser.Math.Between(120,240);
         this.angle = 90;
         this.speed = Phaser.Math.Between(10, 75);
+        
         console.log(this.angle);
 
         this.scene = scene;
