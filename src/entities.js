@@ -15,7 +15,6 @@ class Boat extends Phaser.Physics.Arcade.Sprite {
         this.scene = scene;
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
-    
 
         this.setVelocityY(this.speed * Math.abs(Math.sin(this.refAngle*Math.PI/180)));
         this.setVelocityX(this.speed * (Math.cos(this.refAngle*Math.PI/180)));
@@ -28,32 +27,34 @@ class Boat extends Phaser.Physics.Arcade.Sprite {
 
         this.path = [];
         this.line = null;
-        this.pathSpriteIndex = 0;
+
+        this.graphics = this.scene.add.graphics();
+        this.graphics.lineStyle(5, 0xFFFFFF, 0.3);
     }
 
     followLine() {
-        if (this.path != null && this.path.length > 0 && this.pathSpriteIndex < this.path.length - 1) {
-            this.pathSpriteIndex = Math.min(this.pathSpriteIndex, this.path.length - 1);
-            
-            this.scene.physics.moveTo(this, this.path[this.pathSpriteIndex].x, this.path[this.pathSpriteIndex].y);
+        if (this.path != null && this.path.length > 0 ) {
+            this.scene.physics.moveTo(this, this.path[0].x, this.path[0].y);
             let boatPoint = new Phaser.Geom.Point(this.x, this.y)
 
+            this.angle = 90+(180/Math.PI)*Phaser.Math.Angle.Between(this.x,this.y,this.path[0].x,this.path[0].y)
 
-            this.angle = 90+(180/Math.PI)*Phaser.Math.Angle.Between(this.x,this.y,this.path[this.pathSpriteIndex].x,this.path[this.pathSpriteIndex].y)
-
-            
-            if (Phaser.Math.Distance.BetweenPoints(boatPoint, this.path[this.pathSpriteIndex]) < 20) {
-                this.pathSpriteIndex++;
+            if (Phaser.Math.Distance.BetweenPoints(boatPoint, this.path[0]) < 20) {
+                
+                this.line.clear();
+                this.line.lineStyle(5, 0xFFFFFF, 0.3);
+                this.line.strokePoints(this.path);
+                this.path.shift();
             }
         }
 
         else if (this.line != null) {
+
         }
 
         else {
             this.path = [];
             this.line = null;
-            this.pathSpriteIndex = 0;
         }
     }
     boatBounce(){

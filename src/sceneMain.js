@@ -61,15 +61,7 @@ class SceneMain extends Phaser.Scene {
         ocean.height = config.height;
 
         this.graphics.fillRectShape(ocean);
-        this.graphics.lineStyle(10, 0xFFFFFF, 0.3);
-    }
-    fillBackIn(){
-        let ocean = new Phaser.Geom.Rectangle();
-        ocean.width = config.width;
-        ocean.height = config.height;
-        
-        this.graphics.fillRectShape(ocean);
-        this.graphics.lineStyle(1, 0x06a4d6, 0.3);
+        this.graphics.lineStyle(5, 0xFFFFFF, 0.3);
     }
 
     createCoast() {
@@ -144,13 +136,8 @@ class SceneMain extends Phaser.Scene {
         // Move Boat
         if (this.selectedBoat != null && mouse.isDown) {
             if (!this.wasDown) {
-              this.graphics.moveTo(mouse.x, mouse.y);
-              this.whiteLine();
-              this.pathIndex = 0;
-              this.pathSpriteIndex = 0;
-              this.path = [];
               this.wasDown = true;
-              this.selectedBoat.line = this.graphics.beginPath();
+              this.selectedBoat.line = this.selectedBoat.graphics.beginPath();
               this.selectedBoat.path = [];
             }
             if(this.selectedBoat.y>100){
@@ -160,11 +147,9 @@ class SceneMain extends Phaser.Scene {
 
             }
             
-            
-            if (this.pathIndex == 0 || (this.selectedBoat.path[this.pathIndex - 1].x != mouse.x || this.selectedBoat.path[this.pathIndex - 1].y != mouse.y)) {
-                this.graphics.lineTo(mouse.x, mouse.y);
-                this.graphics.strokePath();
-                this.selectedBoat.path[this.pathIndex] = new Phaser.Geom.Point(mouse.x, mouse.y);
+            let length = this.selectedBoat.path.length
+            if (this.pathIndex == 0 || length == 0 || (this.selectedBoat.path[length - 1].x != mouse.x || this.selectedBoat.path[length - 1].y != mouse.y)) {
+                this.selectedBoat.path.push(new Phaser.Geom.Point(mouse.x, mouse.y));
                 this.pathIndex++;
             }
 
