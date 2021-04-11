@@ -21,8 +21,12 @@ class SceneMain extends Phaser.Scene {
     }
     
     create() {
-        
-      
+        this.score = 0;
+               this.scoreText;
+       
+       
+       
+       
 
         this.tick = 0;
         this.pirateShipTick = 0;
@@ -49,7 +53,7 @@ class SceneMain extends Phaser.Scene {
 
         this.physics.add.collider(this.tractors, this.boats, this.scareBoat,null,this);
       //  this.tractors.body.setImmovable(true);
-        this.scoreText = this.add.text(16, 16, "Score 0", { fontSize: "32px", fill: "#000" });
+        this.scoreText =  this.add.text(16, 16, "Score 0", { fontSize: "32px", fill: "#000" });
 
     }
  
@@ -96,9 +100,21 @@ class SceneMain extends Phaser.Scene {
     scareBoat(){
         //this.boats.disableBody(true,true);
         //Ge båten en random velocity åt något håll när den dunkar in i traktorn.
+      
+    } 
+
+
+
+    updateScore(boat){
+        //this.boats.disableBody(true,true);
+        //Ge båten en random velocity åt något håll när den dunkar in i traktorn.
+        boat.destroy();
         this.score+=10;
         console.log(this.score);
+        this.scoreText.setText('Points: ' + this.score);
     }
+
+
     
     update() {
         
@@ -140,12 +156,7 @@ class SceneMain extends Phaser.Scene {
               this.selectedBoat.line = this.selectedBoat.graphics.beginPath();
               this.selectedBoat.path = [];
             }
-            if(this.selectedBoat.y>100){
-
-             this.score += 10;
-            // this.scoreText = this.scoreText.setText('Score: ' + score);
-
-            }
+            
             
             let length = this.selectedBoat.path.length
             if (this.pathIndex == 0 || length == 0 || (this.selectedBoat.path[length - 1].x != mouse.x || this.selectedBoat.path[length - 1].y != mouse.y)) {
@@ -163,6 +174,11 @@ class SceneMain extends Phaser.Scene {
         }
         
         this.boats.forEach(boat => {
+            if(boat.y>700 && boat.y<750){
+                this.boats.splice(this.boats.indexOf(boat),1);
+
+                this.updateScore(boat)
+            };
             boat.followLine();
         });
         
