@@ -19,6 +19,7 @@ class Boat extends Phaser.Physics.Arcade.Sprite {
 
         this.setVelocityY(this.speed * Math.abs(Math.sin(this.refAngle*Math.PI/180)));
         this.setVelocityX(this.speed * (Math.cos(this.refAngle*Math.PI/180)));
+
         this.scene.physics.add.collider(this, this.scene.westCoast, this.scene.lose)
         this.scene.physics.add.collider(this, this.scene.eastCoast, this.scene.lose)
 
@@ -36,6 +37,10 @@ class Boat extends Phaser.Physics.Arcade.Sprite {
             
             this.scene.physics.moveTo(this, this.path[this.pathSpriteIndex].x, this.path[this.pathSpriteIndex].y);
             let boatPoint = new Phaser.Geom.Point(this.x, this.y)
+
+
+            this.angle = 90+(180/Math.PI)*Phaser.Math.Angle.Between(this.x,this.y,this.path[this.pathSpriteIndex].x,this.path[this.pathSpriteIndex].y)
+
             
             if (Phaser.Math.Distance.BetweenPoints(boatPoint, this.path[this.pathSpriteIndex]) < 20) {
                 this.pathSpriteIndex++;
@@ -51,6 +56,11 @@ class Boat extends Phaser.Physics.Arcade.Sprite {
             this.pathSpriteIndex = 0;
         }
     }
+    boatBounce(){
+        console.log("boatbounce")
+        this.speed = Phaser.Math.Between(50, 75);
+        this.angle = this.refAngle > 90 ? this.refAngle - 270: this.refAngle + 90;
+    }
 }
 
 class Tractor extends Phaser.Physics.Arcade.Sprite {
@@ -65,6 +75,8 @@ class Tractor extends Phaser.Physics.Arcade.Sprite {
         this.scene = scene;
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
+
+       // this.scene.physics.add.collider(this, this.scene.boats, this.boats.boatBounce);
 
         this.setVelocityY(0);
         this.setVelocityX(this.speed);

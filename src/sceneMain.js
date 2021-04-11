@@ -20,7 +20,9 @@ class SceneMain extends Phaser.Scene {
     
     create() {
         this.tick = 0;
+        this.pirateShipTick = 0;
         this.spawnSpeed = 0.2;
+        this.piratespawnSpeed = 0.2; 
         this.boats = [];
         this.selectedBoat = null;
         this.wasDown = false;
@@ -35,10 +37,15 @@ class SceneMain extends Phaser.Scene {
 
         //tractors
         this.tractors = this.physics.add.group({
-            velocityX: 20,
+            velocityX: 50,
             velocityY: 0 
         });
+
+        this.physics.add.collider(this.tractors, this.boats, this.scareBoat,null,this);
+      //  this.tractors.body.setImmovable(true);
     }
+ 
+    
     
     blackoutGraphic() {
         let ocean = new Phaser.Geom.Rectangle();
@@ -77,8 +84,10 @@ class SceneMain extends Phaser.Scene {
         //this.physics.pause();
         console.log("game over!")
     }
+    
 
     scareBoat(){
+        //this.boats.disableBody(true,true);
         //Ge båten en random velocity åt något håll när den dunkar in i traktorn.
     }
     
@@ -96,6 +105,7 @@ class SceneMain extends Phaser.Scene {
         if (!this.westCoast || !this.eastCoast) {
             this.createCoast();
             this.boats.push(new Boat(this, Phaser.Math.Between(0, config.width), -50));
+
         }
 
         // Spawn boats
@@ -104,9 +114,22 @@ class SceneMain extends Phaser.Scene {
             this.spawnSpeed += 0.01;
             this.boats.push(new Boat(this, Phaser.Math.Between(0, config.width), -50));
         }
+     
         else {
             this.tick++;
         }
+        //Spawn tractors 
+        if(this.pirateShipTick >=60/this.piratespawnSpeed){
+            this.pirateShipTick = 0; 
+            this.spawnSpeed +=0.01;
+            this.tractors.add(new Tractor(this, 10,Phaser.Math.Between(100,config.height-500))); 
+        }
+
+        else {
+            this.pirateShipTick++;
+        }
+
+    
 
         // Move Boat
         if (this.selectedBoat != null && mouse.isDown) {
@@ -138,7 +161,6 @@ class SceneMain extends Phaser.Scene {
         this.boats.forEach(boat => {
             boat.followLine();
         });
-
         
 
         this.physics.collide(
